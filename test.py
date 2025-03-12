@@ -12,7 +12,7 @@ from model import final_net
 
 
 parser = argparse.ArgumentParser(description='Shadow')
-parser.add_argument('--test_dir', type=str, default='./inputs/')
+parser.add_argument('--test_dir', type=str, default='./Shadow_Refiner/inputs')
 parser.add_argument('--output_dir', type=str, default='results/')
 parser.add_argument('-test_batch_size', help='Set the testing batch size', default=1, type=int)
 args = parser.parse_args()
@@ -23,7 +23,7 @@ test_dir = args.test_dir
 test_batch_size = args.test_batch_size
 
 test_dataset = dehaze_test_dataset(test_dir)
-test_loader = DataLoader(dataset=test_dataset, batch_size=test_batch_size, shuffle=False, num_workers=0)
+test_loader = DataLoader(dataset=test_dataset, batch_size=test_batch_size, pin_memory=True, shuffle=False, num_workers=0)
 
 device = 'cuda:0'
 print(device)
@@ -31,14 +31,14 @@ print(device)
 model = final_net()
 
 try:
-    model.remove_model.load_state_dict(torch.load(os.path.join('weights', './weights/shadowremoval.pkl'), map_location='cpu'), strict=True)
+    model.remove_model.load_state_dict(torch.load(os.path.join('weights', './weights/shadowremoval.pkl'), map_location='cpu'))#, strict=True)
     print('loading removal_model success')
 except:
     print('loading removal_model error')
 
 
 try:
-    model.enhancement_model.load_state_dict(torch.load(os.path.join('weights', './weights/refinement.pkl'), map_location='cpu'), strict=True)
+    model.enhancement_model.load_state_dict(torch.load(os.path.join('weights', './weights/refinement.pkl'), map_location='cpu'))#, strict=True)
     print('loading enhancement model success')
 except:
     print('loading enhancement model error')
@@ -57,7 +57,7 @@ with torch.no_grad():
         frame_out = frame_out.to(device)
     
         name = re.findall("\d+",str(name))
-        imwrite(frame_out, os.path.join(output_dir, str(name[0])+'.png'), range=(0, 1))
+        imwrite(frame_out, os.path.join(output_dir, str(name[0])+'.png')) #, range=(0, 1))
 
 
 
