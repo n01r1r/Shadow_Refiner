@@ -12,7 +12,7 @@ from model import final_net
 
 
 parser = argparse.ArgumentParser(description='Shadow')
-parser.add_argument('--test_dir', type=str, default='./ShadowDataset/test/')
+parser.add_argument('--test_dir', type=str, default='./inputs/')
 parser.add_argument('--output_dir', type=str, default='results/')
 parser.add_argument('-test_batch_size', help='Set the testing batch size', default=1, type=int)
 args = parser.parse_args()
@@ -31,14 +31,14 @@ print(device)
 model = final_net()
 
 try:
-    model.remove_model.load_state_dict(torch.load(os.path.join('weights', 'shadowremoval.pkl'), map_location='cpu'), strict=True)
+    model.remove_model.load_state_dict(torch.load(os.path.join('weights', './weights/shadowremoval.pkl'), map_location='cpu'), strict=True)
     print('loading removal_model success')
 except:
     print('loading removal_model error')
 
 
 try:
-    model.enhancement_model.load_state_dict(torch.load(os.path.join('weights', 'refinement.pkl'), map_location='cpu'), strict=True)
+    model.enhancement_model.load_state_dict(torch.load(os.path.join('weights', './weights/refinement.pkl'), map_location='cpu'), strict=True)
     print('loading enhancement model success')
 except:
     print('loading enhancement model error')
